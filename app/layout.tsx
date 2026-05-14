@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import { YandexMetrika } from "@/components/yandex-metrika";
 import { siteName, siteUrl } from "@/lib/site";
 
 const geist = Geist({
@@ -43,6 +44,7 @@ export default function RootLayout({
         className="min-h-full flex flex-col"
         suppressHydrationWarning
       >
+        <YandexMetrika />
         {children}
       </body>
     </html>
