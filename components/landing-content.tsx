@@ -260,10 +260,19 @@ function Bitrix24FeaturesDocLink({ className }: { className?: string }) {
         href={bitrix24RuUrl("/features/")}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 font-medium text-brand hover:underline"
+        className="font-medium text-sky-800 no-underline hover:text-sky-950 hover:no-underline"
       >
-        Подробное описание возможностей на bitrix24.ru
-        <IconExternalLink className="size-4 shrink-0" aria-hidden />
+        <span>Подробное описание возможностей </span>
+        <span className="whitespace-nowrap">
+          на{"\u00a0"}
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-300/80 bg-sky-100/90 px-2.5 py-0.5 align-middle text-base font-medium leading-snug text-sky-900 no-underline">
+            bitrix24.ru
+            <IconExternalLink
+              className="size-4 shrink-0 text-sky-800"
+              aria-hidden
+            />
+          </span>
+        </span>
       </a>
     </p>
   );
@@ -465,7 +474,7 @@ export function LandingContent() {
                 }`}
               >
                 {plan.bitrixTariff ? (
-                  <span className="absolute right-6 top-6 z-[1] inline-flex max-w-[min(100%,14rem)] rounded-md border border-slate-200/90 bg-slate-100/90 px-2 py-0.5 text-xs font-medium text-slate-600">
+                  <span className="absolute right-6 top-6 z-[1] inline-flex max-w-[min(100%,14rem)] rounded-full border border-slate-200/90 bg-slate-100/90 px-2 py-0.5 text-xs font-medium text-slate-600">
                     Битрикс24: {plan.bitrixTariff}
                   </span>
                 ) : null}
@@ -546,7 +555,7 @@ export function LandingContent() {
                     <p className="text-sm font-semibold leading-snug text-slate-900">
                       Enterprise внедрение
                     </p>
-                    <span className="inline-flex max-w-full shrink-0 rounded-md border border-slate-200/90 bg-slate-100/90 px-2 py-0.5 text-xs font-medium leading-none text-slate-600">
+                    <span className="inline-flex max-w-full shrink-0 rounded-full border border-slate-200/90 bg-slate-100/90 px-2 py-0.5 text-xs font-medium leading-none text-slate-600">
                       Битрикс24: Enterprise
                     </span>
                   </div>
