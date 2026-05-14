@@ -1,0 +1,26 @@
+# зависимости и сборка
+node_modules
+.next
+out
+
+# git / IDE
+.git
+.gitignore
+.cursor
+
+# локальные секреты не попадают в контекст сборки
+.env
+.env.local
+.env.production.local
+.env.development.local
+
+# докер и CI
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# прочее
+*.md
+coverage
+npm-debug.log*
+.pnpm-debug.log*

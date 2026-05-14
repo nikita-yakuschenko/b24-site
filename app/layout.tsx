@@ -11,7 +11,7 @@ const geist = Geist({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${siteName} — внедрение и интеграции Bitrix24`,
+    default: `Внедрение и интеграции Bitrix24 - ${siteName} `,
     template: `%s · ${siteName}`,
   },
   description:
