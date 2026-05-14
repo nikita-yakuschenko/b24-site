@@ -1,6 +1,9 @@
 # Запуск: скопируйте .env.example → .env, затем:
 #   docker compose up --build
-# Сайт: http://localhost:3000
+# Сайт: http://localhost:${HOST_PORT:-8080} (внутри контейнера всегда порт 3000)
+#
+# HOST_PORT — порт на хосте. По умолчанию 8080, чтобы не конфликтовать с другим
+# процессом/контейнером на :3000 (типичная ошибка Dokploy: «port is already allocated»).
 
 services:
   web:
@@ -10,7 +13,7 @@ services:
       args:
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://b24.module.team}
     ports:
-      - "${PORT:-3000}:3000"
+      - "${HOST_PORT:-8080}:3000"
     env_file:
       - path: .env
         required: false
