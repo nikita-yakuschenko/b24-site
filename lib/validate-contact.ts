@@ -30,19 +30,21 @@ export function validateContactPayload(
 
   if (!emailOk && !phoneOk) {
     if (email.length === 0 && phoneCanon.length === 0) {
-      errors.email = "Укажите email или полный мобильный телефон.";
-      errors.phone = "Укажите email или полный мобильный телефон.";
+      // Одно сообщение на группу полей (см. `errors.contact` в форме).
+      errors.contact =
+        "Укажите email или телефон — номер вводите по маске, все 10 цифр после +7.";
     } else {
       if (email.length > 0 && !EMAIL_RE.test(email)) {
-        errors.email = "Некорректный email. Укажите корректный email или телефон.";
+        errors.email =
+          "Некорректный email. Исправьте адрес или введите телефон по маске.";
       }
       if (phoneCanon.length > 0 && !phoneOk) {
         errors.phone =
-          "Неполный номер. Введите все цифры мобильного или укажите email.";
+          "Номер неполный: доведите до конца маски (+7 и 10 цифр) или укажите email.";
       }
       if (!errors.email && !errors.phone) {
-        errors.email = "Нужен корректный email или полный телефон.";
-        errors.phone = "Нужен корректный email или полный телефон.";
+        errors.contact =
+          "Укажите корректный email или телефон по маске (+7 и 10 цифр).";
       }
     }
   } else {
@@ -50,7 +52,8 @@ export function validateContactPayload(
       errors.email = "Некорректный email.";
     }
     if (phoneCanon.length > 0 && !phoneOk) {
-      errors.phone = "Укажите полный мобильный номер.";
+      errors.phone =
+        "Номер неполный: доведите до конца маски (+7 и 10 цифр) или удалите лишние цифры.";
     }
   }
 

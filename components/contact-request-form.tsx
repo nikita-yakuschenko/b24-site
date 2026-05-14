@@ -144,6 +144,7 @@ export function ContactRequestForm({ recipientEmail, siteUrl }: Props) {
           ) : null}
         </div>
 
+        <div className="space-y-1">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor={`${formId}-email`} className="sr-only">
@@ -158,8 +159,14 @@ export function ContactRequestForm({ recipientEmail, siteUrl }: Props) {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
               placeholder="Email"
-              aria-invalid={errors.email ? true : undefined}
-              aria-describedby={errors.email ? `${formId}-err-email` : undefined}
+              aria-invalid={
+                errors.contact || errors.email ? true : undefined
+              }
+              aria-describedby={
+                [errors.contact && `${formId}-err-contact`, errors.email && `${formId}-err-email`]
+                  .filter(Boolean)
+                  .join(" ") || undefined
+              }
             />
             {errors.email ? (
               <p id={`${formId}-err-email`} className="mt-1 text-xs text-red-600">
@@ -182,8 +189,14 @@ export function ContactRequestForm({ recipientEmail, siteUrl }: Props) {
               autoComplete="tel"
               maxLength={22}
               placeholder="+7 (___) ___-__-__"
-              aria-invalid={errors.phone ? true : undefined}
-              aria-describedby={errors.phone ? `${formId}-err-phone` : undefined}
+              aria-invalid={
+                errors.contact || errors.phone ? true : undefined
+              }
+              aria-describedby={
+                [errors.contact && `${formId}-err-contact`, errors.phone && `${formId}-err-phone`]
+                  .filter(Boolean)
+                  .join(" ") || undefined
+              }
             />
             {errors.phone ? (
               <p id={`${formId}-err-phone`} className="mt-1 text-xs text-red-600">
@@ -191,6 +204,16 @@ export function ContactRequestForm({ recipientEmail, siteUrl }: Props) {
               </p>
             ) : null}
           </div>
+        </div>
+        {errors.contact ? (
+          <p
+            id={`${formId}-err-contact`}
+            className="text-xs text-red-600"
+            role="alert"
+          >
+            {errors.contact}
+          </p>
+        ) : null}
         </div>
 
         <div>
