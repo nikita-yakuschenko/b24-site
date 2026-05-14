@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import {
   IconExternalLink,
   IconRocket,
@@ -7,19 +8,20 @@ import { Bitrix24Logo } from "@/components/bitrix24-logo";
 import { ContactRequestForm } from "@/components/contact-request-form";
 import { Button } from "@/components/ui/button";
 import { bitrix24RuUrl, contacts, siteUrl } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 const pillars = [
   {
-    title: "Облачный стек",
-    text: "Партнёрские компетенции по Bitrix24, Google Workspace, Asana, Freshworks и смежным B2B SaaS — единая точка ответственности.",
+    title: "Внедрение Битрикс24 под ваш бизнес",
+    text: "Настраиваем CRM не по шаблону, а под реальные процессы компании: воронки, сделки, задачи, права доступа, автоматизацию и контроль работы команды.",
   },
   {
-    title: "Инженерия процессов",
-    text: "Сначала модель данных и роли, потом роботы и интеграции. Без «красивых слайдов» вместо работающей CRM.",
+    title: "Все заявки — в одной системе",
+    text: "Подключаем сайт, телефонию, почту, мессенджеры и рекламные каналы, чтобы обращения не терялись, а менеджеры видели всю историю клиента.",
   },
   {
-    title: "Продакшн-культура",
-    text: "Документируем решения, версионируем настройки, передаём знания команде — чтобы платформа жила после запуска.",
+    title: "Поддержка и развитие после запуска",
+    text: "Обучаем сотрудников, дорабатываем сценарии, настраиваем отчёты и помогаем развивать Битрикс24 вместе с ростом компании.",
   },
 ] as const;
 
@@ -30,31 +32,12 @@ const productBlocks: {
   items: { h: string; p: string }[];
 }[] = [
   {
-    id: "collab",
-    title: "Совместная работа",
-    lead: "Коммуникации, документы и процессы в одном контуре — полноценный онлайн-офис.",
-    items: [
-      {
-        h: "Видеозвонки HD",
-        p: "Качество видео и аудио, групповые звонки до 48 человек. Старт из задачи, календаря или ленты.",
-      },
-      {
-        h: "Мессенджер",
-        p: "Чаты, открытые линии, внешние пользователи, файлы и уведомления без разрозненных мессенджеров.",
-      },
-      {
-        h: "Учёт времени",
-        p: "Рабочий день и отчёты в один клик — прозрачная загрузка команды без Excel-таблиц.",
-      },
-    ],
-  },
-  {
     id: "crm",
     title: "CRM",
     lead: "Телефония, почта, соцсети, реклама, склад, оплата и доставка — в одной карточке сделки.",
     items: [
       {
-        h: "Воронка и сущности",
+        h: "Воронки продаж",
         p: "Лиды, сделки, КП, история касаний — всё, что нужно отделу продаж и сервису.",
       },
       {
@@ -73,16 +56,35 @@ const productBlocks: {
     lead: "Канбан, Гант, скрам, шаблоны и роботы — чтобы проекты не «терялись в чатах».",
     items: [
       {
-        h: "Методологии",
-        p: "Канбан, диаграмма Ганта, списки и календарь — под разные типы работ.",
+        h: "Таск-менеджер",
+        p: "Задачи, сроки, статусы и канбан в одном окне — команда видит прогресс без таблиц и лишних созвонов.",
       },
       {
-        h: "Роли и доступ",
-        p: "Постановщик, исполнитель, соисполнитель, наблюдатель — гранулярные права.",
+        h: "Роли и права доступа",
+        p: "Кто ставит задачи, кто видит поля, сделки и отчёты: права по ролям и отделам, без режима «все видят всё».",
       },
       {
-        h: "Автоматизация",
-        p: "Шаблоны задач и проектов, роботы на события — меньше ручных повторов.",
+        h: "Шаблоны задач",
+        p: "Типовые процессы описываете один раз — дальше копируете в проект и запускаете роботов на события, без ручного копипаста.",
+      },
+    ],
+  },
+  {
+    id: "collab",
+    title: "Совместная работа",
+    lead: "Коммуникации, документы и процессы в одном контуре — полноценный онлайн-офис.",
+    items: [
+      {
+        h: "Мессенджер",
+        p: "Чаты, открытые линии, внешние пользователи, файлы и уведомления без разрозненных мессенджеров.",
+      },
+      {
+        h: "Видеозвонки HD",
+        p: "Качество видео и аудио, групповые звонки до 48 человек. Старт из задачи, календаря или ленты.",
+      },
+      {
+        h: "Учёт времени",
+        p: "Рабочий день и отчёты в один клик — прозрачная загрузка команды без Excel-таблиц.",
       },
     ],
   },
@@ -126,75 +128,102 @@ const productBlocks: {
   },
 ];
 
-const partnerPlans = [
+const partnerPlans: {
+  price: string;
+  period?: string;
+  name: string;
+  /** Описание одной строкой; если задан `descBullets`, в карточке показывается только список. */
+  desc: string;
+  /** Тезисы вместо абзаца `desc`. */
+  descBullets?: readonly string[];
+  featured?: boolean;
+  /** Короткое имя тарифа лицензии (бейдж над ценой, справа). */
+  bitrixTariff?: string;
+  /** Одна строка про почасовую кастомизацию (между описанием и кнопкой). */
+  customization?: string;
+}[] = [
   {
-    price: "1 999 ₽",
-    period: "/ мес.",
-    name: "Внедрение «Базовый»",
-    desc: "До 5 пользователей, 24 ГБ, базовая CRM, задачи и онлайн-офис.",
+    price: "19 999 руб.",
+    name: "Базовое внедрение",
+    desc: "",
+    descBullets: [
+      "Разворачивание портала.",
+      "Добавление сотрудников.",
+      "Настройка ролей и прав.",
+      "Базовые настройки.",
+    ],
+    bitrixTariff: "Базовый",
+    customization: "Кастомизация — 3 500 руб./час",
   },
   {
-    price: "4 999 ₽",
-    period: "/ мес.",
-    name: "Внедрение «Стандартный»",
-    desc: "До 50 пользователей, 100 ГБ, полный CRM-стек и управление.",
+    price: "49 999 руб.",
+    name: "Стандартное внедрение",
+    desc: "",
+    descBullets: [
+      "Всё из базового внедрения.",
+      "«Задачи и проекты» — настройка под процессы.",
+      "«Автоматизация» — базовый уровень.",
+      "Обучение команды.",
+    ],
+    bitrixTariff: "Стандартный",
+    customization: "Кастомизация — 3 500 руб./час",
     featured: true,
   },
   {
-    price: "9 999 ₽",
-    period: "/ мес.",
-    name: "Внедрение «Профессиональный»",
-    desc: "До 100 пользователей, 1 ТБ, продвинутая автоматизация и крупные воронки.",
+    price: "99 999 руб.",
+    name: "Профессиональное внедрение",
+    desc: "",
+    descBullets: [
+      "Всё из стандартного внедрения.",
+      "Цифровые рабочие места.",
+      "Смарт-процессы.",
+      "Базы знаний.",
+      "Базовая BI-аналитика.",
+    ],
+    bitrixTariff: "Профессиональный",
+    customization: "Кастомизация — 5 000 руб./час",
   },
-] as const;
+];
 
 const specialization = [
   {
     title: "Инфраструктура",
-    text: "10+ лет в веб и облаках: сотни проектов от лендингов до распределённых сервисов.",
+    text: "Хостинг, домены, почта. Обновления, базовый мониторинг.",
   },
   {
     title: "1С и учёт",
-    text: "Обмен с ERP, номенклатура, заказы — стыкуем Bitrix24 с привычным контуром 1С.",
+    text: "Управленческий и складской учёт. Контрагенты, номенклатура, заказы, оплаты — по типовым или доработанным конфигурациям.",
   },
   {
-    title: "Отраслевые сценарии",
-    text: "Подбираем архитектуру под масштаб, регуляторику и бюджет — без лишней кастомизации.",
+    title: "Ниши и процессы",
+    text: "Торговля, услуги, производство — воронки, поля и статусы под ваши бизнес-процессы, с глубокой кастомизацией.",
   },
   {
     title: "Автоматизация",
-    text: "От простых роботов до цепочек согласований и интеграций с внешними API.",
-  },
-  {
-    title: "Маркировка и compliance",
-    text: "Учитываем требования к данным, ролям и журналированию при внедрении.",
-  },
-  {
-    title: "Enterprise",
-    text: "Права, отделы, интеграции и отказоустойчивые сценарии для крупных команд.",
+    text: "Бизнес-процессы и смарт-процессы, роботы и триггеры в задачах, проектах и сделках. Существующие и кастомные интеграции с внешними сервисами.",
   },
 ] as const;
 
 const advantages = [
   {
-    title: "Внедрение как продукт",
-    text: "Чёткий бэклог, демо-итерации, приёмка по метрикам — не бесконечный проект «когда-нибудь».",
+    title: "Порядок в проекте",
+    text: "Состав работ и критерии приёмки фиксируем заранее: что делаем, в каком порядке, что считаем готово — без размытых «потом доделаем».",
   },
   {
-    title: "Архитекторы Bitrix24",
-    text: "Знаем ограничения платформы и обходим типовые ловушки до того, как они встанут в проде.",
+    title: "Реалистично про Битрикс24",
+    text: "Отделяем настройку из коробки от доработок и интеграций. Не обещаем то, что платформа не потянет или вылезет бюджетом в неожиданный момент.",
   },
   {
-    title: "Сопровождение",
-    text: "После запуска — доработки, обучение, разбор инцидентов и эволюция воронок.",
+    title: "После запуска",
+    text: "Доработки по согласованию, обучение, разбор сбоев и вопросов в работе CRM — не пропадаем после запуска.",
   },
 ] as const;
 
 const steps = [
   {
     n: "01",
-    title: "Discovery",
-    text: "Интервью, карта процессов, гипотезы ROI и рисков.",
+    title: "Предпроект",
+    text: "Интервью, карта процессов, гипотезы по эффекту для бизнеса и по рискам.",
   },
   {
     n: "02",
@@ -208,13 +237,13 @@ const steps = [
   },
   {
     n: "04",
-    title: "Delivery",
-    text: "Настройка, миграция, пилот, обучение, go-live и гиперкара после запуска.",
+    title: "Внедрение и запуск",
+    text: "Настройка, перенос данных, опытная эксплуатация, обучение, перевод в промышленную эксплуатацию и усиленная поддержка сразу после запуска.",
   },
 ] as const;
 
 const card =
-  "rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-slate-300 hover:shadow-md";
+  "rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition hover:border-slate-300 hover:shadow-md sm:p-9";
 const cardSm =
   "rounded-xl border border-slate-200 bg-slate-50/90 p-5 transition hover:border-slate-300 hover:bg-white";
 
@@ -297,12 +326,23 @@ export function LandingContent() {
               </span>
             </a>
           </div>
-          <div className="mt-20 grid gap-5 sm:grid-cols-3">
+          <div className="mt-20 grid grid-cols-1 gap-8 sm:grid-cols-3 sm:grid-rows-[auto_auto_1fr] sm:gap-x-5 sm:items-stretch">
             {pillars.map((p) => (
-              <article key={p.title} className={card}>
-                <div className="mb-3 h-px w-8 bg-lime-500" aria-hidden />
-                <h2 className="text-base font-semibold text-slate-900">{p.title}</h2>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">{p.text}</p>
+              <article
+                key={p.title}
+                className={cn(
+                  card,
+                  "flex flex-col",
+                  "sm:row-span-3 sm:grid sm:grid-rows-subgrid sm:gap-0",
+                )}
+              >
+                <div className="mb-3 h-0.5 w-7 shrink-0 bg-lime-500" aria-hidden />
+                <h2 className="text-balance text-base font-bold leading-snug text-slate-900">
+                  {p.title}
+                </h2>
+                <p className="mt-4 text-sm leading-relaxed text-slate-600 sm:self-start">
+                  {p.text}
+                </p>
               </article>
             ))}
           </div>
@@ -411,43 +451,126 @@ export function LandingContent() {
             Пакеты внедрения
           </h3>
           <p className="mt-3 max-w-3xl text-slate-600">
-            Лицензия + настройка под ваш сценарий. Условия и сроки — в договоре после
-            discovery-фазы.
+            Лицензия + настройка под ваш сценарий. Условия и сроки — в договоре после этапа
+            предпроекта.
           </p>
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
             {partnerPlans.map((plan) => (
               <article
                 key={plan.name}
-                className={`flex flex-col rounded-2xl border p-6 shadow-sm ${
+                className={`relative flex flex-col rounded-2xl border p-6 shadow-sm ${
                   "featured" in plan && plan.featured
                     ? "border-lime-400/80 bg-lime-50/60 ring-2 ring-lime-400/25"
                     : "border-slate-200 bg-white"
                 }`}
               >
-                <p className="font-sans text-3xl font-bold text-slate-900">
-                  {plan.price}
-                  <span className="text-base font-normal text-slate-500">
-                    {plan.period}
+                {plan.bitrixTariff ? (
+                  <span className="absolute right-6 top-6 z-[1] inline-flex max-w-[min(100%,14rem)] rounded-md border border-slate-200/90 bg-slate-100/90 px-2 py-0.5 text-xs font-medium text-slate-600">
+                    Битрикс24: {plan.bitrixTariff}
                   </span>
+                ) : null}
+                <p
+                  className={cn(
+                    "font-sans text-3xl font-bold text-slate-900",
+                    plan.bitrixTariff && "mt-7 sm:mt-8",
+                  )}
+                >
+                  {plan.price}
+                  {plan.period ? (
+                    <span className="text-base font-normal text-slate-500">
+                      {plan.period}
+                    </span>
+                  ) : null}
                 </p>
                 <h4 className="mt-4 text-lg font-semibold text-slate-900">{plan.name}</h4>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
-                  {plan.desc}
-                </p>
+                {plan.descBullets?.length ? (
+                  <ul className="mt-2 flex-1 list-disc space-y-2 pl-4 text-sm leading-snug text-slate-600 marker:text-slate-400">
+                    {plan.descBullets.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
+                    {plan.desc}
+                  </p>
+                )}
+                {plan.customization ? (
+                  <div className="mt-8 rounded-lg border border-slate-200/90 bg-slate-50/90 px-4 py-3 text-center">
+                    <p className="text-sm font-medium leading-snug text-slate-700">
+                      {plan.customization}
+                    </p>
+                  </div>
+                ) : null}
                 <Button
-                  render={<a href="#contacts" />}
+                  render={
+                    <a
+                      href={`?package=${encodeURIComponent(plan.name)}#contacts`}
+                      aria-label={`Заказать пакет «${plan.name}»`}
+                    />
+                  }
                   nativeButton={false}
                   variant={
                     "featured" in plan && plan.featured ? "default" : "outline"
                   }
                   size="lg"
-                  className="mt-6 w-full"
+                  className={cn(
+                    "w-full",
+                    plan.customization ? "mt-8" : "mt-10",
+                  )}
                 >
                   <IconRocket className="size-4" data-icon="inline-start" />
                   Заказать
                 </Button>
               </article>
             ))}
+          </div>
+
+          <div className="mt-6 w-full lg:mt-8">
+            <article className="flex w-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm sm:flex-row sm:items-stretch">
+              <div className="flex w-full shrink-0 flex-col justify-center px-4 py-5 sm:w-fit sm:px-5 sm:py-5">
+                <p className="text-left font-sans text-xl font-bold leading-tight text-slate-900 sm:text-2xl">
+                  Стоимость: по запросу
+                </p>
+              </div>
+
+              <div
+                className="relative hidden shrink-0 self-stretch sm:block sm:w-px"
+                aria-hidden
+              >
+                <div className="absolute left-0 top-5 bottom-5 w-px bg-slate-200" />
+              </div>
+
+              <div className="flex min-w-0 flex-1 flex-col gap-3 border-t border-slate-200 px-4 py-3 sm:border-t-0 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:px-5 sm:py-4">
+                <div className="min-w-0 sm:flex-1">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <p className="text-sm font-semibold leading-snug text-slate-900">
+                      Enterprise внедрение
+                    </p>
+                    <span className="inline-flex max-w-full shrink-0 rounded-md border border-slate-200/90 bg-slate-100/90 px-2 py-0.5 text-xs font-medium leading-none text-slate-600">
+                      Битрикс24: Enterprise
+                    </span>
+                  </div>
+                  <p className="mt-2 text-xs leading-snug text-slate-600 sm:text-sm">
+                    Для определения стоимости необходимо проведение стратегической сессии.
+                  </p>
+                </div>
+                <Button
+                  render={
+                    <a
+                      href={`?package=${encodeURIComponent("Enterprise")}#contacts`}
+                      aria-label="Заказать Enterprise внедрение, тариф Битрикс24"
+                    />
+                  }
+                  nativeButton={false}
+                  variant="outline"
+                  size="default"
+                  className="w-full shrink-0 sm:w-auto"
+                >
+                  <IconRocket className="size-4" data-icon="inline-start" />
+                  Заказать
+                </Button>
+              </div>
+            </article>
           </div>
         </div>
       </section>
@@ -457,24 +580,28 @@ export function LandingContent() {
         className="scroll-mt-20 border-b border-slate-200 bg-white"
       >
         <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-          <p className="font-sans text-xs uppercase tracking-[0.25em] text-brand">
-            Стек
-          </p>
-          <h2 className="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">
+          <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
             Специализация
           </h2>
-          <p className="mt-5 max-w-3xl text-lg text-slate-600">
-            От аудита до сопровождения — закрываем полный цикл вокруг Bitrix24 и смежных
-            систем.
+          <p className="mt-4 w-full max-w-none text-base leading-relaxed text-slate-600 sm:text-lg">
+            Зоны, в которых чаще всего подключаемся. Периметр и смету всё равно фиксируем
+            отдельно — здесь просто ориентир, с чем обычно приходят.
           </p>
-          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 w-full border-t border-slate-200">
             {specialization.map((item) => (
-              <li key={item.title} className={cardSm}>
-                <h3 className="font-semibold text-slate-900">{item.title}</h3>
-                <p className="mt-2 text-sm text-slate-600">{item.text}</p>
-              </li>
+              <div
+                key={item.title}
+                className="grid grid-cols-1 gap-2 border-b border-slate-200 py-5 last:border-b-0 sm:grid-cols-[minmax(0,240px)_minmax(0,1fr)] sm:items-start sm:gap-x-10 sm:gap-y-0 sm:py-6 md:grid-cols-[minmax(0,260px)_minmax(0,1fr)] md:gap-x-12 lg:gap-x-16"
+              >
+                <h3 className="text-sm font-semibold text-slate-900 sm:pt-0.5 md:text-base">
+                  {item.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-slate-600 md:text-base md:leading-relaxed">
+                  {item.text}
+                </p>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
 
@@ -483,18 +610,20 @@ export function LandingContent() {
         className="scroll-mt-20 border-b border-slate-200 bg-slate-50"
       >
         <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-          <p className="font-sans text-xs uppercase tracking-[0.25em] text-brand">
-            Подход
-          </p>
-          <h2 className="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">
+          <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
             Почему мы
           </h2>
-          <div className="mt-12 grid gap-10 md:grid-cols-3">
-            {advantages.map((a) => (
-              <div key={a.title}>
-                <div className="mb-4 font-sans text-xs text-brand">{`//`}</div>
-                <h3 className="text-lg font-semibold text-slate-900">{a.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{a.text}</p>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {advantages.map((a, i) => (
+              <div
+                key={a.title}
+                className="flex flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
+              >
+                <span className="font-sans text-xs font-semibold tabular-nums text-slate-400">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="mt-2 text-base font-semibold text-slate-900">{a.title}</h3>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-600">{a.text}</p>
               </div>
             ))}
           </div>
@@ -512,17 +641,16 @@ export function LandingContent() {
           <h2 className="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">
             Как выглядит внедрение
           </h2>
-          <ol className="mt-12 grid gap-5 md:grid-cols-2">
+
+          <ol className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:items-stretch">
             {steps.map((s) => (
               <li
                 key={s.n}
-                className="flex gap-5 rounded-2xl border border-slate-200 bg-slate-50/80 p-6 shadow-sm"
+                className="flex h-full min-h-0 flex-col rounded-2xl border border-slate-200 bg-slate-50/80 p-6 shadow-sm transition hover:border-slate-300 hover:bg-white"
               >
-                <span className="font-sans text-2xl font-bold text-brand">{s.n}</span>
-                <div>
-                  <h3 className="font-semibold text-slate-900">{s.title}</h3>
-                  <p className="mt-1 text-sm text-slate-600">{s.text}</p>
-                </div>
+                <span className="font-sans text-sm font-bold text-brand">{s.n}</span>
+                <h3 className="mt-2 font-semibold text-slate-900">{s.title}</h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{s.text}</p>
               </li>
             ))}
           </ol>
@@ -576,10 +704,12 @@ export function LandingContent() {
                 </p>
               </div>
             </div>
-            <ContactRequestForm
-              recipientEmail={contacts.email}
-              siteUrl={siteUrl}
-            />
+            <Suspense fallback={null}>
+              <ContactRequestForm
+                recipientEmail={contacts.email}
+                siteUrl={siteUrl}
+              />
+            </Suspense>
           </div>
         </div>
       </section>

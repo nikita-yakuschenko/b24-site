@@ -1,6 +1,7 @@
 "use client";
 
-import { useId, useState } from "react";
+import { startTransition, useEffect, useId, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { IconBrandTelegram, IconLoader2, IconSend } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { ruPhoneFormatInput } from "@/lib/ru-phone";
@@ -13,8 +14,23 @@ type Props = {
 const inputClass =
   "w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-300/40 aria-invalid:border-red-400 aria-invalid:ring-red-200/50";
 
+function prefillLineFromPackageQuery(raw: string): string {
+  let label: string;
+  try {
+    label = decodeURIComponent(raw);
+  } catch {
+    label = raw;
+  }
+  const trimmed = label.trim();
+  if (/^enterprise$/i.test(trimmed)) {
+    return `Enterprise внедрение, Битрикс24.\n`;
+  }
+  return `пакет «${label}»\n`;
+}
+
 export function ContactRequestForm({ recipientEmail, siteUrl }: Props) {
   const formId = useId();
+  const searchParams = useSearchParams();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -23,6 +39,15 @@ export function ContactRequestForm({ recipientEmail, siteUrl }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [showMailFallback, setShowMailFallback] = useState(false);
+
+  const packageFromUrl = searchParams.get("package");
+  useEffect(() => {
+    if (!packageFromUrl) return;
+    const line = prefillLineFromPackageQuery(packageFromUrl);
+    startTransition(() => {
+      setMessage(line);
+    });
+  }, [packageFromUrl]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
