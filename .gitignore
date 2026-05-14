@@ -33,6 +33,12 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# не в репозиторий
+/.env
+/.env.example
+/AGENTS.md
+/CLAUDE.md
+
 # vercel
 .vercel
 
