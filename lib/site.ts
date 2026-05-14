@@ -21,9 +21,11 @@ export function bitrix24RuUrl(path: string = "/"): string {
   return url.href;
 }
 
+const ADDRESS_MAPS_QUERY = "Нижний Новгород, улица Маршала Баграмяна, 1";
+
 export const contacts = {
   /** Две строки: город и улица (разделитель \n — в разметке нужен whitespace-pre-line). */
   address: "город Нижний Новгород\nулица Маршала Баграмяна, 1",
-  mapsUrl: "https://yandex.ru/maps/-/CCUKEWSS1D",
+  mapsUrl: `https://yandex.ru/maps/?text=${encodeURIComponent(ADDRESS_MAPS_QUERY)}`,
   email: "sales@module.team",
 } as const;
