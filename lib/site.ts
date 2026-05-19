@@ -1,3 +1,5 @@
+import { ruPhoneFormatFromCanonical } from "@/lib/ru-phone";
+
 /** Публичный URL сайта (продакшен). Для превью задайте в .env NEXT_PUBLIC_SITE_URL */
 export const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://b24.module.team";
@@ -22,10 +24,13 @@ export function bitrix24RuUrl(path: string = "/"): string {
 }
 
 const ADDRESS_MAPS_QUERY = "Нижний Новгород, улица Маршала Баграмяна, 1";
+const PHONE_CANON = "79306705970";
 
 export const contacts = {
   /** Две строки: город и улица (разделитель \n — в разметке нужен whitespace-pre-line). */
   address: "город Нижний Новгород\nулица Маршала Баграмяна, 1",
   mapsUrl: `https://yandex.ru/maps/?text=${encodeURIComponent(ADDRESS_MAPS_QUERY)}`,
+  phone: `+${PHONE_CANON}`,
+  phoneDisplay: ruPhoneFormatFromCanonical(PHONE_CANON),
   email: "sales@module.team",
 } as const;

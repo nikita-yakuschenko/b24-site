@@ -474,7 +474,7 @@ export function LandingContent() {
                 }`}
               >
                 {plan.bitrixTariff ? (
-                  <span className="absolute right-6 top-6 z-[1] inline-flex max-w-[min(100%,14rem)] rounded-full border border-slate-200/90 bg-slate-100/90 px-2 py-0.5 text-xs font-medium text-slate-600">
+                  <span className="absolute right-6 top-6 z-1 inline-flex max-w-[min(100%,14rem)] rounded-full border border-slate-200/90 bg-slate-100/90 px-2 py-0.5 text-xs font-medium text-slate-600">
                     Битрикс24: {plan.bitrixTariff}
                   </span>
                 ) : null}
@@ -698,6 +698,17 @@ export function LandingContent() {
                     className="mt-1 block whitespace-pre-line text-base font-medium text-slate-900 transition hover:text-brand"
                   >
                     {contacts.address}
+                  </a>
+                </p>
+                <p>
+                  <span className="font-sans text-[10px] uppercase tracking-widest text-slate-500">
+                    Телефон
+                  </span>
+                  <a
+                    href={`tel:${contacts.phone}`}
+                    className="mt-1 block text-base font-medium text-slate-900 transition hover:text-brand"
+                  >
+                    {contacts.phoneDisplay}
                   </a>
                 </p>
                 <p>

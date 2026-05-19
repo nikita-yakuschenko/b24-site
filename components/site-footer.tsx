@@ -22,6 +22,12 @@ export function SiteFooter() {
             {contacts.address}
           </a>
           <a
+            className="font-medium text-slate-700 transition hover:text-brand"
+            href={`tel:${contacts.phone}`}
+          >
+            {contacts.phoneDisplay}
+          </a>
+          <a
             className="font-medium text-brand hover:underline"
             href={`mailto:${contacts.email}`}
           >
